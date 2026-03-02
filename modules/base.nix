@@ -2,6 +2,7 @@
   flake.modules.nvf.base = {lib, ...}: let
     inherit (lib.generators) mkLuaInline;
     inherit (lib.nvim.dag) entryBefore entryAfter;
+    inherit (lib.nvim.binds) mkKeymap;
   in {
     imports = with self.modules.nvf; [
       theming
@@ -147,17 +148,8 @@
       };
 
       keymaps = [
-        {
-          key = ";";
-          action = ":";
-          mode = "";
-          noremap = false;
-        }
-        {
-          key = ";;";
-          action = ";";
-          mode = "";
-        }
+        (mkKeymap ["n" "v"] ";" ":" {})
+        (mkKeymap ["n" "v"] ";;" ";" {noremap = false;})
       ];
 
       clipboard = {

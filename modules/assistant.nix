@@ -77,12 +77,13 @@
               },
               interactions = {
                 chat = {
-                  adapter = "copilot_cli",
+                  -- adapter = "copilot_cli",
+                  adapter = "opencode",
                 },
               },
-              opts = {
+              display = {
                 chat = {
-                  show_settings = true,
+                  -- show_settings = true,
                   start_in_insert_mode = true,
                   show_header_seperator = true,
                 },
