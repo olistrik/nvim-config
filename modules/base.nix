@@ -1,7 +1,7 @@
 {self, ...}: {
   flake.modules.nvf.base = {lib, ...}: let
     inherit (lib.generators) mkLuaInline;
-    inherit (lib.nvim.dag) entryAnywhere entryBefore entryAfter;
+    inherit (lib.nvim.dag) entryBefore entryAfter;
   in {
     imports = with self.modules.nvf; [
       theming
@@ -24,6 +24,30 @@
         comment.enable = true;
         surround.enable = true;
         trailspace.enable = true;
+        map = {
+          enable = true;
+          setupOpts =
+            mkLuaInline
+            # lua
+            ''
+              (function ()
+                local map = require('mini.map')
+                return {
+                  integrations = {
+                    map.gen_integration.builtin_search(),
+                    map.gen_integration.diagnostic(),
+                    map.gen_integration.gitsigns(),
+                  },
+                  symbols = {
+                    encode = map.gen_encode_symbols.dot('4x2'),
+                  },
+                  window = {
+                    show_integration_count = false,
+                  },
+                }
+              end)()
+            '';
+        };
         animate = {
           enable = true;
           setupOpts =
@@ -49,33 +73,20 @@
               end)()
             '';
         };
-        map = {
-          enable = true;
-          setupOpts =
-            mkLuaInline
-            # lua
-            ''
-              (function ()
-                local map = require('mini.map')
-                return {
-                  integrations = {
-                    map.gen_integration.builtin_search(),
-                    map.gen_integration.diagnostic(),
-                    map.gen_integration.gitsigns(),
-                  },
-                  symbols = {
-                    encode = map.gen_encode_symbols.dot('4x2'),
-                  },
-                  window = {
-                    show_integration_count = false,
-                  },
-                }
-              end)()
-            '';
-        };
       };
 
       luaConfigRC = {
+        mini-map-auto-open =
+          entryAfter ["pluginConfig"]
+          #lua
+          ''
+            vim.api.nvim_create_autocmd("VimEnter", {
+                callback = function()
+                  MiniMap.open() -- TODO: this should probably be on a keybind.
+                end,
+              })
+          '';
+
         mini-scroll-mouse-fix =
           entryBefore ["pluginConfig"]
           #lua
