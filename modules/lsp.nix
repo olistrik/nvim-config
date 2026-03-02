@@ -13,7 +13,11 @@
         enableExtraDiagnostics = true;
 
         nix.enable = true;
-        python.enable = true;
+        python = {
+          enable = true;
+
+          lsp.servers = ["ty"];
+        };
       };
     };
   };
