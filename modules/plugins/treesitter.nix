@@ -13,6 +13,7 @@
         fold = true;
         # indent.enable = true;
         highlight.enable = true;
+        # context.enable = true;
         # incrementalSelection.enable = true; # removed from treesitter?
         textobjects = {
           enable = true;

@@ -1,9 +1,10 @@
 {self, ...}: {
-  flake.modules.nvf.base = {...}: {
+  flake.modules.nvf.base = {
     imports = with self.modules.nvf; [
       theming
 
       lualine
+      # hlchunk
       telescope
       git
       treesitter
@@ -19,6 +20,17 @@
         ai.enable = true;
         comment.enable = true;
         surround.enable = true;
+        trailspace.enable = true;
+      };
+
+      utility.snacks-nvim = {
+        enable = true;
+        setupOpts = {
+          indent = {
+            enabled = true;
+            animate.enabled = false;
+          };
+        };
       };
 
       globals.mapleader = " ";
@@ -31,6 +43,10 @@
         hlsearch = false; # don't keep previous searches highlighted.
         mouse = "nvchr"; # allow mouse in all modes but insert.
         signcolumn = "yes"; # always show the sign column.
+
+        tm = 3000; # timeoutlen mildly frustrating this has been renamed.
+
+        exrc = true;
       };
 
       keymaps = [

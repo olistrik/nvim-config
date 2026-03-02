@@ -25,7 +25,7 @@
         }).neovim;
     in rec {
       nvim-minimal = baseConfig [];
-      nvim-full = baseConfig (with modules; [lsp]);
+      nvim-full = baseConfig (with modules; [lsp assistant]);
       default = nvim-minimal;
     };
   };
