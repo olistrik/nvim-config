@@ -1,21 +1,20 @@
 {self, ...}: {
-  flake.modules.nvf.lsp = {...}: {
+  flake.modules.nvf.lsp = {lib, ...}: {
     imports = with self.modules.nvf; [completion];
 
     config.vim = {
       lsp = {
         enable = true;
+        servers.ty.cmd = lib.mkForce ["ty" "server"];
       };
 
       languages = {
         enableFormat = true;
         enableTreesitter = true;
-        enableExtraDiagnostics = true;
 
         nix.enable = true;
         python = {
           enable = true;
-
           lsp.servers = ["ty"];
         };
       };
