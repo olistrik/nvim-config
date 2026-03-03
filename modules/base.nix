@@ -1,39 +1,40 @@
-{self, ...}: {
-  flake.modules.nvf.base = {lib, ...}: let
-    inherit (lib.generators) mkLuaInline;
-    inherit (lib.nvim.dag) entryBefore entryAfter;
-    inherit (lib.nvim.binds) mkKeymap;
-  in {
-    imports = with self.modules.nvf; [
-      theming
+{ self, ... }:
+{
+  flake.modules.nvf.base =
+    { lib, ... }:
+    let
+      inherit (lib.generators) mkLuaInline;
+      inherit (lib.nvim.dag) entryBefore entryAfter;
+      inherit (lib.nvim.binds) mkKeymap;
+    in
+    {
+      imports = with self.modules.nvf; [
+        theming
 
-      lualine
-      # hlchunk
-      telescope
-      git
-      treesitter
-      autoformat
-      autoindent
-      minimap
+        lualine
+        # hlchunk
+        telescope
+        git
+        treesitter
+        autoformat
+        autoindent
+        minimap
 
-      # nix-comment-lang
-    ];
+        # nix-comment-lang
+      ];
 
-    vim = {
-      ui.colorizer.enable = true;
-      notes.todo-comments.enable = true;
+      vim = {
+        ui.colorizer.enable = true;
+        notes.todo-comments.enable = true;
 
-      mini = {
-        ai.enable = true;
-        comment.enable = true;
-        surround.enable = true;
-        trailspace.enable = true;
-        animate = {
-          enable = true;
-          setupOpts =
-            mkLuaInline
-            # lua
-            ''
+        mini = {
+          ai.enable = true;
+          comment.enable = true;
+          surround.enable = true;
+          trailspace.enable = true;
+          animate = {
+            enable = true;
+            setupOpts = mkLuaInline /* lua */ ''
               (function()
               	local animate = require("mini.animate")
               	return {
@@ -52,14 +53,11 @@
               	}
               end)()
             '';
+          };
         };
-      };
 
-      luaConfigRC = {
-        mini-scroll-mouse-fix =
-          entryBefore ["pluginConfig"]
-          #lua
-          ''
+        luaConfigRC = {
+          mini-scroll-mouse-fix = entryBefore [ "pluginConfig" ] /* lua */ ''
             for _, scroll in ipairs({ "Up", "Down" }) do
             	local key = "<ScrollWheel" .. scroll .. ">"
             	vim.keymap.set("", key, function()
@@ -69,10 +67,8 @@
             end
           '';
 
-        auto-hlsearch-toggler =
-          entryAfter ["pluginConfig"]
-          #lua
-          ''
+          # TODO: This doesn't support interactive find and replace (s/foo/bar/c).
+          auto-hlsearch-toggler = entryAfter [ "pluginConfig" ] /* lua */ ''
             vim.on_key(function(char)
             	if vim.fn.mode() == "n" then
             		local new_hlsearch = vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, vim.fn.keytrans(char))
@@ -84,47 +80,47 @@
             	end
             end, vim.api.nvim_create_namespace("auto_hlsearch"))
           '';
-      };
+        };
 
-      utility.snacks-nvim = {
-        enable = true;
-        setupOpts = {
-          indent = {
-            enabled = true;
-            animate.enabled = false;
+        utility.snacks-nvim = {
+          enable = true;
+          setupOpts = {
+            indent = {
+              enabled = true;
+              animate.enabled = false;
+            };
+            # scroll = {
+            #   enabled = true;
+            # };
           };
-          # scroll = {
-          #   enabled = true;
-          # };
+        };
+
+        globals.mapleader = " ";
+
+        options = {
+          number = true; # show current line number.
+          relativenumber = true; # show other lines as relative numbers.
+          scrolloff = 5; # keep at least 5 lines visible above/below cursor.
+          incsearch = true; # show first match while searching.
+          # hlsearch = false; # don't keep previous searches highlighted.
+          mouse = "nvchr"; # allow mouse in all modes but insert.
+          signcolumn = "yes"; # always show the sign column.
+          conceallevel = 2; # allow complete concealment and character concealment.
+
+          tm = 3000; # timeoutlen mildly frustrating this has been renamed.
+
+          exrc = true;
+        };
+
+        keymaps = [
+          (mkKeymap [ "n" "v" ] ";" ":" { })
+          (mkKeymap [ "n" "v" ] ";;" ";" { noremap = false; })
+        ];
+
+        clipboard = {
+          enable = true;
+          registers = "unnamed,unnamedplus";
         };
       };
-
-      globals.mapleader = " ";
-
-      options = {
-        number = true; # show current line number.
-        relativenumber = true; # show other lines as relative numbers.
-        scrolloff = 5; # keep at least 5 lines visible above/below cursor.
-        incsearch = true; # show first match while searching.
-        hlsearch = false; # don't keep previous searches highlighted.
-        mouse = "nvchr"; # allow mouse in all modes but insert.
-        signcolumn = "yes"; # always show the sign column.
-        conceallevel = 2; # allow complete concealment and character concealment.
-
-        tm = 3000; # timeoutlen mildly frustrating this has been renamed.
-
-        exrc = true;
-      };
-
-      keymaps = [
-        (mkKeymap ["n" "v"] ";" ":" {})
-        (mkKeymap ["n" "v"] ";;" ";" {noremap = false;})
-      ];
-
-      clipboard = {
-        enable = true;
-        registers = "unnamed,unnamedplus";
-      };
     };
-  };
 }

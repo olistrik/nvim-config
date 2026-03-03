@@ -79,7 +79,7 @@ local function conceal_node(buf, ns, node)
 end
 
 local function inject_ghost_lang(buf, ns, comment, node, text, lang)
-	if vim.wo.conceallevel < 2 or not lang or cursor_within(comment) then
+	if vim.wo.conceallevel < 1 or not lang or cursor_within(comment) then
 		return
 	end
 
@@ -112,10 +112,10 @@ local function refresh_matches(buf)
 	local query = vim.treesitter.query.parse(
 		"nix",
 		[[
-    ;query
-    ((comment) @code.comment
-      [(string_expression) (indented_string_expression)] @code.string)
-  ]]
+		;query
+		((comment) @code.comment
+			[(string_expression) (indented_string_expression)] @code.string)
+		]]
 	)
 
 	local tree = vim.treesitter.get_parser():parse()[1]
@@ -123,7 +123,7 @@ local function refresh_matches(buf)
 	matches[buf] = {}
 	local idx = 1
 
-	for pattern, match, metadata in query:iter_matches(tree:root(), buf) do
+	for _, match, _ in query:iter_matches(tree:root(), buf) do
 		-- id: 1 = code.comment
 		-- id: 2 = code.string
 		local comment_node = match[1][1]

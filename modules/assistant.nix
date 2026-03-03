@@ -1,35 +1,33 @@
 {
-  flake.modules.nvf.assistant = {
-    lib,
-    config,
-    options,
-    ...
-  }: let
-    inherit (lib.generators) mkLuaInline;
-    inherit (lib.nvim.binds) mkMappingOption mkKeymap;
+  flake.modules.nvf.assistant =
+    {
+      lib,
+      config,
+      options,
+      ...
+    }:
+    let
+      inherit (lib.generators) mkLuaInline;
+      inherit (lib.nvim.binds) mkMappingOption mkKeymap;
 
-    cfg = config.vim.assistant.codecompanion-nvim;
-    keys = cfg.mappings;
-    inherit (options.vim.assistant.codecompanion-nvim) mappings;
-  in {
-    options.vim.assistant.codecompanion-nvim = {
-      mappings = {
-        actions = mkMappingOption "Actions menu [CodeCompanion]" "<leader>ca";
-        toggleChat = mkMappingOption "Toggle chat window [CodeCompanion]" "<leader>cc";
-        addSelection = mkMappingOption "Add visual selection to chat [CodeCompanion]" "<leader>cy";
+      cfg = config.vim.assistant.codecompanion-nvim;
+      keys = cfg.mappings;
+      inherit (options.vim.assistant.codecompanion-nvim) mappings;
+    in
+    {
+      options.vim.assistant.codecompanion-nvim = {
+        mappings = {
+          actions = mkMappingOption "Actions menu [CodeCompanion]" "<leader>ca";
+          toggleChat = mkMappingOption "Toggle chat window [CodeCompanion]" "<leader>cc";
+          addSelection = mkMappingOption "Add visual selection to chat [CodeCompanion]" "<leader>cy";
+        };
       };
-    };
 
-    config.vim = {
-      assistant.codecompanion-nvim = {
-        enable = true;
+      config.vim = {
+        assistant.codecompanion-nvim = {
+          enable = true;
 
-        setupOpts =
-          mkLuaInline
-          /*
-          lua
-          */
-          ''
+          setupOpts = mkLuaInline /* lua */ ''
             {
               adapters = {
                 acp = {
@@ -92,17 +90,23 @@
               },
             }
           '';
-      };
-      lazy.plugins.codecompanion-nvim = {
-        cmd = "CodeCompanionChat";
-        keys = [
-          (mkKeymap ["n" "v"] keys.actions "<cmd>CodeCompanionActions<cr>" {desc = mappings.actions.description;})
-          (mkKeymap ["n" "v"] keys.toggleChat "<cmd>CodeCompanionChat Toggle<cr>" {desc = mappings.toggleChat.description;})
-          (mkKeymap ["v"] keys.addSelection "<cmd>CodeCompanionChat Add<cr>" {desc = mappings.addSelection.description;})
-        ];
+        };
+        lazy.plugins.codecompanion-nvim = {
+          cmd = "CodeCompanionChat";
+          keys = [
+            (mkKeymap [ "n" "v" ] keys.actions "<cmd>CodeCompanionActions<cr>" {
+              desc = mappings.actions.description;
+            })
+            (mkKeymap [ "n" "v" ] keys.toggleChat "<cmd>CodeCompanionChat Toggle<cr>" {
+              desc = mappings.toggleChat.description;
+            })
+            (mkKeymap [ "v" ] keys.addSelection "<cmd>CodeCompanionChat Add<cr>" {
+              desc = mappings.addSelection.description;
+            })
+          ];
+        };
       };
     };
-  };
 
   flake.modules.nvf.keymaps = {
   };
