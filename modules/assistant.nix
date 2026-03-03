@@ -26,7 +26,9 @@
 
         setupOpts =
           mkLuaInline
-          #lua
+          /*
+          lua
+          */
           ''
             {
               adapters = {

@@ -7,7 +7,7 @@
         guess-indent = {
           package = guess-indent-nvim;
           setup =
-            # lua
+            /* lua */
             ''
               require('guess-indent').setup {}
             '';

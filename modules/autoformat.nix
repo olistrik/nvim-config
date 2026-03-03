@@ -3,7 +3,12 @@
     inherit (lib.nvim.dag) entryAnywhere;
   in {
     config.vim = {
-      formatter.conform-nvim.enable = true;
+      formatter.conform-nvim = {
+        enable = true;
+        setupOpts.formatters_by_ft = {
+          "*" = ["injected"];
+        };
+      };
       lsp.formatOnSave = true;
 
       pluginRC.conform-nvim =

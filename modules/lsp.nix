@@ -5,14 +5,20 @@
     config.vim = {
       lsp = {
         enable = true;
-        servers.ty.cmd = lib.mkForce ["ty" "server"];
+        lspconfig.enable = true;
+        # servers.ty.cmd = lib.mkForce ["ty" "server"];
       };
 
       languages = {
         enableFormat = true;
         enableTreesitter = true;
-
-        nix.enable = true;
+        nix = {
+          enable = true;
+          format.type = ["nixfmt"];
+        };
+        lua = {
+          enable = true;
+        };
         python = {
           enable = true;
           lsp.servers = ["ty"];
