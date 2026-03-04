@@ -1,5 +1,5 @@
 {
-  flake.modules.nvf.assistant =
+  flake.modules.nvf.codecompanion =
     {
       lib,
       config,
