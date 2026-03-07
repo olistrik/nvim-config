@@ -9,6 +9,8 @@
     in
     {
       imports = with self.modules.nvf; [
+        extraPlugins # BUG: flake-parts doesn't set module keys properly.
+
         theming
 
         lualine
@@ -19,6 +21,7 @@
         autoformat
         autoindent
         minimap
+        notebook-navigator
 
         # nix-comment-lang
       ];

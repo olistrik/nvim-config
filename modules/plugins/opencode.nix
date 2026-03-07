@@ -51,7 +51,7 @@
       };
 
     opencode = {
-      imports = [ extraPlugins ];
+      # imports = [ extraPlugins ]; # BUG: flake-parts doesn't set module keys properly.
 
       vim.assistant.opencode = {
         enable = true;
